@@ -1,4 +1,4 @@
-#Asynchronous FIFO
+**FIFO Architecture Description**
 
 The asynchronous FIFO architecture enables reliable data transfer between two independent clock domains. The write side operates on the write clock (wr_clk), while the read side operates on the read clock (rd_clk).
 
