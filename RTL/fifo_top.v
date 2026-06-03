@@ -44,8 +44,31 @@ wire [ADDR_WIDTH:0] rptr_bin;
 wire [ADDR_WIDTH:0] wptr_gray;
 wire [ADDR_WIDTH:0] rptr_gray;
 
+// New wires to hold the SAFELY synchronized pointers
+wire [ADDR_WIDTH:0] wptr_gray_sync;
+wire [ADDR_WIDTH:0] rptr_gray_sync;
+
 wire [ADDR_WIDTH-1:0] waddr;
 wire [ADDR_WIDTH-1:0] raddr;
+
+    
+cdc_sync #(
+    .WIDTH(ADDR_WIDTH + 1)
+) sync_r2w (
+    .clk(wr_clk),
+    .rst(rst),
+    .data_in(rptr_gray),
+    .data_out(rptr_gray_sync)
+);
+
+cdc_sync #(
+    .WIDTH(ADDR_WIDTH + 1)
+) sync_w2r (
+    .clk(rd_clk),
+    .rst(rst),
+    .data_in(wptr_gray),
+    .data_out(wptr_gray_sync)
+);
 
 write_pointer #(
     .ADDR_WIDTH(ADDR_WIDTH)
@@ -53,7 +76,7 @@ write_pointer #(
     .clk(wr_clk),
     .rst(rst),
     .wr_en(wr_en),
-    .rptr_gray_sync(rptr_gray),
+    .rptr_gray_sync(rptr_gray_sync), // Clean synchronized signal
     .wptr_bin(wptr_bin),
     .wptr_gray(wptr_gray),
     .waddr(waddr),
@@ -66,7 +89,7 @@ read_pointer #(
     .clk(rd_clk),
     .rst(rst),
     .rd_en(rd_en),
-    .wptr_gray_sync(wptr_gray),
+    .wptr_gray_sync(wptr_gray_sync), // Clean synchronized signal
     .rptr_bin(rptr_bin),
     .rptr_gray(rptr_gray),
     .raddr(raddr),
