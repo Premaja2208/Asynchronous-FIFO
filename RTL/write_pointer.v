@@ -46,9 +46,7 @@ assign wptr_gray_next = (wptr_bin_next >> 1) ^ wptr_bin_next;
 
 assign wptr_gray = (wptr_bin >> 1) ^ wptr_bin;
 
-assign full = (wptr_gray_next ==
-               {~rptr_gray_sync[ADDR_WIDTH:ADDR_WIDTH-1],
-                rptr_gray_sync[ADDR_WIDTH-2:0]});
+assign full = (wptr_gray == {~rptr_gray_sync[ADDR_WIDTH:ADDR_WIDTH-1],rptr_gray_sync[ADDR_WIDTH-2:0]});
 
 always @(posedge clk or posedge rst)
 begin
