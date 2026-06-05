@@ -4,7 +4,7 @@ An optimized, production-ready Asynchronous FIFO (First-In, First-Out) design im
 
 ---
 
-## 📌 Features
+## Features
 
 * **True Asynchronous Dual-Clock Operation:** Supports independent read and write clock domains operating at different frequencies.
 * **Robust CDC Architecture:** Incorporates a 2-stage Flip-Flop (2-FF) synchronizer chain to significantly lower the probability of metastability.
@@ -14,7 +14,7 @@ An optimized, production-ready Asynchronous FIFO (First-In, First-Out) design im
 
 ---
 
-## 🏗️ Architectural Block Diagram
+## Architectural Block Diagram
 
              +-----------------------------------------------------------+
              |                         FIFO_TOP                          |
@@ -37,7 +37,7 @@ dout   <-------+-----------+--+--------+                        |          |
 
 ---
 
-## 📁 Module Directory Structure
+## Module Directory Structure
 
 The project RTL is divided modularly into isolated structural and behavioral blocks:
 
@@ -51,7 +51,7 @@ The project RTL is divided modularly into isolated structural and behavioral blo
 
 ---
 
-## 🎛️ Port Descriptions
+## Port Descriptions
 
 ### `fifo_top` (Top-Level Wrapper)
 
@@ -69,7 +69,7 @@ The project RTL is divided modularly into isolated structural and behavioral blo
 
 ---
 
-## ⚡ Mathematical & Logic Implementations
+## Mathematical & Logic Implementations
 
 ### 1. Binary-to-Gray Conversion
 Multi-bit binary pointers crossing clock boundaries risk severe sampling corruption if bits flip asynchronously. Gray code guarantees only one bit toggles per increment step:
@@ -77,6 +77,7 @@ Multi-bit binary pointers crossing clock boundaries risk severe sampling corrupt
 $$G_i = B_i \oplus B_{i+1}$$
 
 In Verilog code, this is optimized as an architectural shortcut expression:
+
 ```verilog
 assign gray = (bin >> 1) ^ bin;
 2. Flag Conditions
