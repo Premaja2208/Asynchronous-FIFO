@@ -1,6 +1,6 @@
 # Asynchronous FIFO with Safe Clock Domain Crossing (CDC)
 
-A production-ready Asynchronous FIFO (First-In, First-Out) design implemented in Verilog. This architecture enables reliable data transfer between two completely independent and unsynchronized clock domains (write clock and read clock) without data corruption or loss.
+A functional Asynchronous FIFO (First-In, First-Out) design implemented in Verilog. This architecture enables reliable data transfer between two completely independent and unsynchronized clock domains (write clock and read clock) without data corruption or loss.
 
 ---
 
