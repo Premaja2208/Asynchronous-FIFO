@@ -16,23 +16,24 @@ An optimized, production-ready Asynchronous FIFO (First-In, First-Out) design im
 
 ## Architectural Block Diagram
 
-             +-----------------------------------------------------------+
-             |                         FIFO_TOP                          |
-             |                                                           |
-wr_clk --------+----> [ WRITE POINTER ] ------------------------+          |
-wr_en  --------+           | (wptr_gray)                        |          |
-din    --------+--+        v                                    v          |
-|  |   [cdc_sync: w2r]                     [fifo_mem]       |
-|  |        | (wptr_gray_sync)                   ^          |
-|  |        v                                    |          |
-rd_clk --------+--+--------+----> [ READ POINTER ]              |          |
-rd_en  --------+-----------+--+        | (rptr_gray)           |          |
-dout   <-------+-----------+--+--------+                        |          |
-|              v                                 |          |
-|       [cdc_sync: r2w]                          |          |
-|              | (rptr_gray_sync)                |          |
-|              +---------------------------------+          |
-+-----------------------------------------------------------+
+```text
+                 +-----------------------------------------------------------+
+                 |                         FIFO_TOP                          |
+                 |                                                           |
+  wr_clk --------+----> [ WRITE POINTER ] ------------------------+          |
+  wr_en  --------+           | (wptr_gray)                        |          |
+  din    --------+--+        v                                    v          |
+                 |  |   [cdc_sync: w2r]                     [fifo_mem]       |
+                 |  |        | (wptr_gray_sync)                   ^          |
+                 |  |        v                                    |          |
+  rd_clk --------+--+--------+----> [ READ POINTER ]              |          |
+  rd_en  --------+-----------+--+        | (rptr_gray)           |          |
+  dout   <-------+-----------+--+--------+                        |          |
+                 |              v                                 |          |
+                 |       [cdc_sync: r2w]                          |          |
+                 |              | (rptr_gray_sync)                |          |
+                 |              +---------------------------------+          |
+                 +-----------------------------------------------------------+
 
 
 ---
@@ -77,39 +78,38 @@ Multi-bit binary pointers crossing clock boundaries risk severe sampling corrupt
 $$G_i = B_i \oplus B_{i+1}$$
 
 In Verilog code, this is optimized as an architectural shortcut expression:
-
-```verilog
 assign gray = (bin >> 1) ^ bin;
-2. Flag Conditions
-Both pointers are extended by an extra bit (ADDR_WIDTH + 1) to clearly distinguish between an empty memory array and a full state condition:
 
+### 2. Flag Conditions
+Both pointers are extended by an extra bit (ADDR_WIDTH + 1) to clearly distinguish between an empty memory array and a full state condition:
 empty Assertion: Occurs when the local read Gray pointer matches the synchronized write Gray pointer exactly:
 
-Verilog
 assign empty = (rptr_gray == wptr_gray_sync);
-full Assertion: Occurs when the write pointer loops past the read pointer. In Gray space, this corresponds to the two most significant bits being inverted, while the lower bits match perfectly:
 
-Verilog
+full Assertion: Occurs when the write pointer loops past the read pointer. In Gray space, this corresponds to the two most significant bits being inverted, while the lower bits match perfectly:
 assign full = (wptr_gray == {~rptr_gray_sync[ADDR_WIDTH:ADDR_WIDTH-1], rptr_gray_sync[ADDR_WIDTH-2:0]});
-📈 Verification & Behavioral Waveform Analysis
+
+## Verification & Behavioral Waveform Analysis
+
 Simulation testing run via a dedicated testbench setup confirms highly reliable operation under heavily mismatched performance constraints:
 
-1. Clock Domain Disparity
+### 1. Clock Domain Disparity
 Write Clock (wr_clk): Programmed at 100 MHz (10 ns cycle).
 
 Read Clock (rd_clk): Driven asynchronously on a ~142.8 MHz (14 ns cycle).
 
 Data cleanly transfers from a fast domain down to a slower consuming node without a single bit dropping.
 
-2. Synchronization Penalty (Latency)
+### 2. Synchronization Penalty (Latency)
 Due to the defensive 2-stage Flip-Flop structure utilized inside cdc_sync, pointer updates take up to 2 target clock cycles to manifest across boundaries.
 
 Pessimistic Empty Fall: When a burst write sequence triggers on an empty FIFO, the empty line doesn't instantly de-assert. It drops exactly after a 2-cycle stabilization latency penalty on rd_clk, preventing invalid state assessment.
 
-3. Reset Execution
+### 3. Reset Execution
 The system maps safely back to an initialization state upon declaring a high reset (rst) toggle. All active memory indexes point safely to base 0 coordinates, while empty cleanly returns to 1.
 
-🛠️ Simulating the Design
+## Simulating the Design
+
 To run using common EDA suites such as AMD Vivado, Siemens QuestaSim, or Icarus Verilog:
 
 Compiling via Icarus Verilog:
