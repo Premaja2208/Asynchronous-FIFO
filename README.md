@@ -133,9 +133,7 @@ Due to the 2-stage synchronizer:
 * Pointer updates take up to 2 clock cycles to propagate
 * Empty and full signals are intentionally delayed (pessimistic behavior)
 
----
-
-## Reset Behavior
+### Reset Behavior
 
 * All pointers reset to zero
 * FIFO initializes to empty state
