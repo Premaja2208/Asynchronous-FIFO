@@ -4,12 +4,6 @@ A functional Asynchronous FIFO (First-In, First-Out) design implemented in Veril
 
 ---
 
-## Overview
-
-Asynchronous FIFOs are critical in digital systems where data must safely cross clock domains operating at different frequencies. This design focuses on correctness, robustness, and scalability, making it suitable for real-world RTL and ASIC workflows.
-
----
-
 ## Key Features
 
 * **True Dual-Clock Operation**
@@ -79,24 +73,6 @@ The design is modular and separates functionality cleanly:
 
 * **fifo_tb.v**
   Testbench for functional verification.
-
----
-
-## Interface Description
-
-### Top Module: `fifo_top`
-
-| Signal | Direction | Width      | Description                           |
-| ------ | --------- | ---------- | ------------------------------------- |
-| wr_clk | Input     | 1          | Write clock (higher frequency domain) |
-| rd_clk | Input     | 1          | Read clock (lower frequency domain)   |
-| rst    | Input     | 1          | Active-high asynchronous reset        |
-| wr_en  | Input     | 1          | Write enable (ignored if full)        |
-| rd_en  | Input     | 1          | Read enable (ignored if empty)        |
-| din    | Input     | DATA_WIDTH | Input data                            |
-| dout   | Output    | DATA_WIDTH | Output data                           |
-| full   | Output    | 1          | FIFO full flag (write domain)         |
-| empty  | Output    | 1          | FIFO empty flag (read domain)         |
 
 ---
 
@@ -192,15 +168,6 @@ Then run:
 ```bash
 gtkwave waveform.vcd
 ```
-
----
-
-## Applications
-
-* Clock domain crossing in SoCs
-* High-speed communication interfaces
-* Data buffering between subsystems
-* ASIC and FPGA designs
 
 ---
 
